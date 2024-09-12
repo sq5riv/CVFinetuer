@@ -46,8 +46,8 @@ class Certificates(models.Model):
     issue_date = models.DateField()
     expire_date = models.DateField(blank=True)
     id_number = models.CharField(max_length=50)
-    cert_link = models.CharField()
-    notes = models.CharField()
+    cert_link = models.URLField()
+    notes = models.CharField(max_length=500)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
@@ -76,7 +76,7 @@ class Skills(models.Model):
     autonomy_level = models.CharField(
         max_length=20, choices=AUTONOMY_LEVEL_CHOICES
     )
-    notes = models.CharField()
+    notes = models.CharField(max_length=500)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
@@ -87,7 +87,7 @@ class Skills(models.Model):
 
 
 class SelfDescription(models.Model):
-    description = models.CharField()
+    description = models.CharField(max_length=1000)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
@@ -96,7 +96,7 @@ class SelfDescription(models.Model):
 
 class SkillsCertificates(models.Model):
     skill = models.ForeignKey(
-            "Skill",
+            "Skills",
             on_delete=models.CASCADE,
             )
     certificate = models.ForeignKey(
@@ -107,7 +107,7 @@ class SkillsCertificates(models.Model):
 
 class SkillsExperience(models.Model):
     skill = models.ForeignKey(
-            "Skill",
+            "Skills",
             on_delete=models.CASCADE,
             )
     certificate = models.ForeignKey(

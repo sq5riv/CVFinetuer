@@ -7,6 +7,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=30)
     email = models.EmailField()
     gender = models.BinaryField(blank=True)
+    photo = models.ImageField()
 
 
 class Experience(models.Model):

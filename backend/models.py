@@ -6,8 +6,10 @@ class Person(models.Model):
     middle_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30)
     email = models.EmailField()
-    gender = models.BinaryField(blank=True)
-    photo = models.ImageField()
+    photo = models.ImageField(upload_to='backend/foto/')
+
+    def __str__(self):
+        return str(self.name) + ' ' + str(self.last_name)
 
 
 class Experience(models.Model):
@@ -29,15 +31,22 @@ class Experience(models.Model):
     )
     role = models.CharField(max_length=30)
     start_date = models.DateField()
-    end_date = models.DateField(blank=True)
-    description = models.CharField(max_length=500)
+    end_date = models.DateField(null=True, blank=True)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
-        return self.place_name
+        return str(self.place_name)
+
+
+class ExperienceDescription(models.Model):
+    experience = models.ForeignKey(
+        "Experience",
+        on_delete=models.CASCADE,
+    )
+    description = models.CharField(max_length=2000)
 
 
 class Certificates(models.Model):
@@ -46,12 +55,15 @@ class Certificates(models.Model):
     issue_date = models.DateField()
     expire_date = models.DateField(blank=True)
     id_number = models.CharField(max_length=50)
-    cert_link = models.URLField()
+    cert_link = models.URLField(blank=True)
     notes = models.CharField(max_length=500)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Skills(models.Model):
@@ -69,7 +81,7 @@ class Skills(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    knowledge_level = models.CharField(
+    level = models.CharField(
         max_length=20, choices=KNOWLEDGE_LEVEL_CHOICES
     )
     experience_time = models.PositiveIntegerField(help_text="Experience in years")
@@ -83,7 +95,7 @@ class Skills(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class SelfDescription(models.Model):
@@ -92,6 +104,9 @@ class SelfDescription(models.Model):
         "Person",
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return str(self.owner) + ': ' + str(self.description)[:30]
 
 
 class SkillsCertificates(models.Model):
@@ -110,7 +125,30 @@ class SkillsExperience(models.Model):
             "Skills",
             on_delete=models.CASCADE,
             )
-    certificate = models.ForeignKey(
+    experience = models.ForeignKey(
             "Experience",
             on_delete=models.CASCADE,
             )
+
+
+class ExperienceCertificates(models.Model):
+    experience = models.ForeignKey(
+            "Experience",
+            on_delete=models.CASCADE,
+            )
+    certificate = models.ForeignKey(
+            "Certificates",
+            on_delete=models.CASCADE,
+            )
+
+
+class Offers(models.Model):
+    owner = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+        )
+    company_name = models.CharField(max_length=80)
+    position = models.CharField(max_length=50)
+    offer_link = models.URLField(null=True, blank=True)
+    offer = models.CharField(max_length=2000)
+    cv = models.CharField(max_length=2000)

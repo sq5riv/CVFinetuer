@@ -3,7 +3,7 @@ from django.db import models
 
 class Person(models.Model):
     name = models.CharField(max_length=30)
-    middle_name = models.CharField(max_length=30, blank=True)
+    middle_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30)
     email = models.EmailField()
     photo = models.ImageField(upload_to='backend/foto/')
@@ -53,13 +53,19 @@ class Certificates(models.Model):
     name = models.CharField(max_length=50)
     issuer = models.CharField(max_length=150)
     issue_date = models.DateField()
-    expire_date = models.DateField(blank=True)
+    expire_date = models.DateField(null=True, blank=True)
     id_number = models.CharField(max_length=50)
-    cert_link = models.URLField(blank=True)
+    cert_link = models.URLField(null=True, blank=True)
     notes = models.CharField(max_length=500)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
+    )
+    experience = models.ForeignKey(
+        "Experience",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     def __str__(self):

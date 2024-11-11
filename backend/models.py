@@ -157,4 +157,7 @@ class Offers(models.Model):
     position = models.CharField(max_length=50)
     offer_link = models.URLField(null=True, blank=True)
     offer = models.CharField(max_length=2000)
-    cv = models.CharField(max_length=2000)
+    cv = models.CharField(max_length=2000, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.company_name) + ' - ' + str(self.position)

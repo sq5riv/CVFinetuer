@@ -24,7 +24,8 @@ class CVGenerator(object):
         offer.cv = self.cv_content
         offer.save()
 
-    def find_all_bricks(self, person_id: int) -> Dict[str, List]:
+    @staticmethod
+    def find_all_bricks(person_id: int) -> Dict[str, List]:
 
         bricks = {"Person": [Person(id=person_id)],
                   "SelfDescription": [SelfDescription.objects.filter(owner__id=person_id)]

@@ -1,4 +1,5 @@
-from ..models import Offers, SelfDescription, Person, Experience, ExperienceDescription, Certificates
+from ..models import Offers, SelfDescription, Person, Experience, ExperienceDescription, Certificates,\
+    Skills, SkillDescription
 from django.shortcuts import get_object_or_404
 from typing import List, Dict
 
@@ -25,10 +26,10 @@ class CVGenerator(object):
 
     def find_all_bricks(self, person_id: int) -> Dict[str, List]:
 
-        experience = Experience.objects.filter(owner__id=person_id)
         bricks = {"Person": [Person(id=person_id)],
                   "SelfDescription": [SelfDescription.objects.filter(owner__id=person_id)]
                   }
+        experience = Experience.objects.filter(owner__id=person_id)
         for index, exp in enumerate(experience):
             bricks[f"Experience_{index}"] = exp
             descriptions = list(ExperienceDescription.objects.filter(experience=exp.id))
@@ -36,8 +37,13 @@ class CVGenerator(object):
                 bricks[f"Experience_{index}_Descriptions"] = descriptions
 
         bricks["Certificates"] = list(Certificates.objects.filter(owner__id=person_id))
+        skills = Skills.objects.filter(owner__id=person_id)
+        for index, exp in enumerate(skills):
+            bricks[f"Skill_{index}"] = exp
+            descriptions = list(SkillDescription.objects.filter(experience=exp.id))
+            if descriptions:
+                bricks[f"Skill_{index}_Descriptions"] = descriptions
 
-        print(bricks)
         return bricks
 
     def get_cv(self):

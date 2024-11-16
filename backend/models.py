@@ -60,7 +60,7 @@ class ExperienceDescription(models.Model):
 
     def __repr__(self):
         return (f"ExperienceDescription(experience_id={self.experience.id!r}, "
-                f"description={self.description!r}...)")
+                f"description={self.description!r})")
 
 
 class Certificates(models.Model):

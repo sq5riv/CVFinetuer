@@ -11,6 +11,10 @@ class Person(models.Model):
     def __str__(self):
         return str(self.name) + ' ' + str(self.last_name)
 
+    def __repr__(self):
+        return (f"Person(name={self.name!r}, middle_name={self.middle_name!r}, "
+                f"last_name={self.last_name!r}, email={self.email!r}")
+
 
 class Experience(models.Model):
     COMMERCIAL = "Com"
@@ -40,6 +44,12 @@ class Experience(models.Model):
     def __str__(self):
         return str(self.place_name)
 
+    def __repr__(self):
+        return (f"Experience(place_name={self.place_name!r}, "
+                f"type={self.EXP_TYPES.get(self.type, 'Unknown')!r}, "
+                f"role={self.role!r}, start_date={self.start_date!r}, "
+                f"end_date={self.end_date!r},  ")
+
 
 class ExperienceDescription(models.Model):
     experience = models.ForeignKey(
@@ -47,6 +57,10 @@ class ExperienceDescription(models.Model):
         on_delete=models.CASCADE,
     )
     description = models.CharField(max_length=2000)
+
+    def __repr__(self):
+        return (f"ExperienceDescription(experience_id={self.experience.id!r}, "
+                f"description={self.description!r}...)")
 
 
 class Certificates(models.Model):
@@ -70,6 +84,12 @@ class Certificates(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+    def __repr__(self):
+        return (f"Certificates(name={self.name!r}, issuer={self.issuer!r}, "
+                f"issue_date={self.issue_date!r}, expire_date={self.expire_date!r}, "
+                f"id_number={self.id_number!r}, cert_link={self.cert_link!r}, "
+                f"notes={self.notes!r}, owner_id={self.owner.id!r}")
 
 
 class Skills(models.Model):
@@ -104,6 +124,20 @@ class Skills(models.Model):
         return str(self.name)
 
 
+class SkillDescription(models.Model):
+    description = models.CharField(max_length=1000)
+    owner = models.ForeignKey(
+        "Person",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return str(self.owner) + ': ' + str(self.description)[:30]
+
+    def __repr__(self):
+        return str(self.owner) + ': ' + str(self.description)
+
+
 class SelfDescription(models.Model):
     description = models.CharField(max_length=1000)
     owner = models.ForeignKey(
@@ -113,6 +147,9 @@ class SelfDescription(models.Model):
 
     def __str__(self):
         return str(self.owner) + ': ' + str(self.description)[:30]
+
+    def __repr__(self):
+        return str(self.owner) + ': ' + str(self.description)
 
 
 class SkillsCertificates(models.Model):

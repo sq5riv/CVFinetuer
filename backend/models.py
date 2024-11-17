@@ -126,8 +126,8 @@ class Skills(models.Model):
 
 class SkillDescription(models.Model):
     description = models.CharField(max_length=1000)
-    owner = models.ForeignKey(
-        "Person",
+    skill = models.ForeignKey(
+        "Skills",
         on_delete=models.CASCADE,
     )
 

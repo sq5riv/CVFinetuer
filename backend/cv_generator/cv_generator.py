@@ -7,7 +7,7 @@ from typing import List, Dict
 class CVGenerator(object):
 
     def __init__(self, offer_id: int):
-        # Retrieve the offer record
+
         offer = get_object_or_404(Offers, id=offer_id)
 
         self.find_all_bricks(person_id=offer.owner.id)
@@ -39,9 +39,9 @@ class CVGenerator(object):
 
         bricks["Certificates"] = list(Certificates.objects.filter(owner__id=person_id))
         skills = Skills.objects.filter(owner__id=person_id)
-        for index, exp in enumerate(skills):
-            bricks[f"Skill_{index}"] = exp
-            descriptions = list(SkillDescription.objects.filter(experience=exp.id))
+        for index, skill in enumerate(skills):
+            bricks[f"Skill_{index}"] = skill
+            descriptions = list(SkillDescription.objects.filter(skill_id=skill.id))
             if descriptions:
                 bricks[f"Skill_{index}_Descriptions"] = descriptions
 

@@ -1,0 +1,11 @@
+asgiref==3.8.1
+Django==5.1.1
+django-stubs==5.1.1
+django-stubs-ext==5.1.1
+mypy==1.13.0
+mypy-extensions==1.0.0
+pillow==10.4.0
+sqlparse==0.5.1
+tomli==2.1.0
+types-PyYAML==6.0.12.20240917
+typing_extensions==4.12.2

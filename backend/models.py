@@ -22,12 +22,13 @@ class Experience(models.Model):
     VOLUNTARY = "Vol"
     PERSONAL = "Per"
 
-    EXP_TYPES = {
-        COMMERCIAL: "Commercial",
-        EDUCATION: "Educational",
-        VOLUNTARY: "Voluntary",
-        PERSONAL: "Personal"
-    }
+    EXP_TYPES = [
+        (COMMERCIAL, "Commercial"),
+        (EDUCATION, "Educational"),
+        (VOLUNTARY, "Voluntary"),
+        (PERSONAL, "Personal")
+    ]
+
     place_name = models.CharField(max_length=50)
     type = models.CharField(
         max_length=3,

@@ -10,7 +10,7 @@ class CVGenerator(object):
 
         offer = get_object_or_404(Offers, id=offer_id)
 
-        self.find_all_bricks(person_id=offer.owner.id)
+        self.bricks = self.find_all_bricks(person_id=offer.owner.id)
         # Simple logic to generate CV content (this could be more complex)
         self.cv_content = f"""
                 CV for {offer.owner}:
@@ -26,9 +26,8 @@ class CVGenerator(object):
 
     @staticmethod
     def find_all_bricks(person_id: int) -> Dict[str, List]:
-
-        bricks = {"Person": [Person(id=person_id)],
-                  "SelfDescription": [SelfDescription.objects.filter(owner__id=person_id)]
+        bricks = {"Person": Person.objects.get(id=person_id).to_json(),
+                  "SelfDescription": [desc.to_json() for desc in SelfDescription.objects.filter(owner__id=person_id)]
                   }
         experience = Experience.objects.filter(owner__id=person_id)
         for index, exp in enumerate(experience):

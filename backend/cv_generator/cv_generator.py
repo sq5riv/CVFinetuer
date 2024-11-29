@@ -1,7 +1,8 @@
 from ..models import Offers, SelfDescription, Person, Experience, ExperienceDescription, Certificates,\
     Skills, SkillDescription
 from django.shortcuts import get_object_or_404
-from typing import List, Dict
+from typing import List
+from .brick import Brick
 
 
 class CVGenerator(object):
@@ -10,7 +11,7 @@ class CVGenerator(object):
 
         offer = get_object_or_404(Offers, id=offer_id)
 
-        self.find_all_bricks(person_id=offer.owner.id)
+        self.bricks = self.find_all_bricks(person_id=offer.owner.id)
         # Simple logic to generate CV content (this could be more complex)
         self.cv_content = f"""
                 CV for {offer.owner}:
@@ -25,27 +26,28 @@ class CVGenerator(object):
         offer.save()
 
     @staticmethod
-    def find_all_bricks(person_id: int) -> Dict[str, List]:
-
-        bricks = {"Person": [Person(id=person_id)],
-                  "SelfDescription": [SelfDescription.objects.filter(owner__id=person_id)]
-                  }
+    def find_all_bricks(person_id: int) -> List:
+        brick_list = [Brick(label="Person", data=Person.objects.get(id=person_id).to_json())]
+        brick_list.extend([Brick(label="SelfDescription", data=desc.to_json()) for desc in
+                           SelfDescription.objects.filter(owner__id=person_id)])
         experience = Experience.objects.filter(owner__id=person_id)
         for index, exp in enumerate(experience):
-            bricks[f"Experience_{index}"] = exp
+            brick_list.append(Brick(label=f"Experience_{index}", data=exp.to_json()))
             descriptions = list(ExperienceDescription.objects.filter(experience=exp.id))
             if descriptions:
-                bricks[f"Experience_{index}_Descriptions"] = descriptions
-
-        bricks["Certificates"] = list(Certificates.objects.filter(owner__id=person_id))
+                brick_list.extend([Brick(label=f"Experience_{index}_Descriptions", data=desc.to_json())
+                                   for desc in descriptions])
+        brick_list.extend([Brick(f"certificate_{index}", cert.to_json())
+                           for index, cert in enumerate(list(Certificates.objects.filter(owner__id=person_id)))])
         skills = Skills.objects.filter(owner__id=person_id)
         for index, skill in enumerate(skills):
-            bricks[f"Skill_{index}"] = skill
+            brick_list.append(Brick(label=f"Skill_{index}", data=skill.to_json()))
             descriptions = list(SkillDescription.objects.filter(skill_id=skill.id))
             if descriptions:
-                bricks[f"Skill_{index}_Descriptions"] = descriptions
+                brick_list.extend([Brick(label=f"Skill_{index}_Description", data=desc.to_json())
+                                   for desc in descriptions])
 
-        return bricks
+        return brick_list
 
     def get_cv(self):
         return self.cv_content

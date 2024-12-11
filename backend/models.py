@@ -100,7 +100,7 @@ class Certificates(models.Model):
     expire_date = models.DateField(null=True, blank=True)
     id_number = models.CharField(max_length=50)
     cert_link = models.URLField(null=True, blank=True)
-    notes = models.CharField(max_length=500)
+    notes = models.CharField(max_length=500, null=True, blank=True)
     owner = models.ForeignKey(
         "Person",
         on_delete=models.CASCADE,
